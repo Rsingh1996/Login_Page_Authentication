@@ -1,5 +1,5 @@
 const express = require("express");
-const User = require("./mongo");
+const User = require("./user");
 const cors = require("cors");
 const PORT = 6969;
 const app = express();
@@ -10,38 +10,38 @@ app.get("/", cors(), (req, resp) => {
   console.log("GET API called!");
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  User.findone({ email: email }, (err, user) => {
-    if (user) {
-      if (password === user.password) {
-        res.send({ message: "login sucess", user: user });
-      } else {
-        res.send({ message: "wrong credentials" });
-      }
-    } else {
-      res.send("not register");
+  try {
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.send("not registered");
     }
-  });
+    if (password === user.password) {
+      res.send({ message: "login success", user: user });
+    } else {
+      res.send({ message: "wrong credentials" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
-app.post("/register", (req, resp) => {
+app.post("/register", async (req, res) => {
   const { userName, email, password } = req.body;
-  console.log(req.body);
-  User.findOne({ email: email }, (err, user) => {
-    if (user) {
-      res.send({ message: "user already exist" });
-    } else {
-      const user = new User({ userName, email, password });
-      user.save((err) => {
-        if (err) {
-          res.send(err);
-        } else {
-          res.send({ message: "sucessfull" });
-        }
-      });
+  try {
+    const existingUser = await User.findOne({ email: email });
+    if (existingUser) {
+      return res.send({ message: "user already exists" });
     }
-  });
+    const newUser = new User({ userName, email, password });
+    await newUser.save();
+    res.send({ message: "success" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
