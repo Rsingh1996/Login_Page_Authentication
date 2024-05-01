@@ -1,12 +1,17 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const User = require("./user");
 const cors = require("cors");
 const PORT = 6969;
 const app = express();
+const dbConnection = require("./mongo.js");
 app.use(express.json());
 app.use(cors());
 
-app.get("/", cors(), (req, resp) => {
+// Connect to the database
+dbConnection();
+
+app.get("/", cors(), (req, res) => {
   console.log("GET API called!");
 });
 

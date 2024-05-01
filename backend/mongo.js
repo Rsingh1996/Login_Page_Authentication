@@ -1,10 +1,15 @@
 const mongoose = require("mongoose");
 
-mongoose
-  .connect("mongodb://localhost:27017/user-Auth", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    socketTimeoutMS: 30000, // Set socket timeout to 30 seconds (30000 milliseconds)
-  })
-  .then(() => console.log("DB Connected!"))
-  .catch(() => console.log("DB connection failed!"));
+const dbConnection = () => {
+  return mongoose
+    .connect("mongodb://localhost:27017/user-Auth")
+    .then(() => {
+      console.log("DB Connected!");
+    })
+    .catch((err) => {
+      console.error("DB connection failed:", err);
+      process.exit(1);
+    });
+};
+
+module.exports = dbConnection;
