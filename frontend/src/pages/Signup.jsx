@@ -10,7 +10,7 @@ const Signup = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser({
-      ...user, //spread operator
+      ...user,
       [name]: value,
     });
   };
@@ -35,11 +35,11 @@ const Signup = () => {
         <span class="justify-center text-sm text-center text-gray-500 flex-items-center dark:text-gray-400">
           Already have an account ?
           <a
-            href="#"
+            href="/Login"
             target="_blank"
             class="text-sm text-blue-500 underline hover:text-blue-700"
           >
-            Sign in
+            Login
           </a>
         </span>
         <div class="p-6 mt-8">
